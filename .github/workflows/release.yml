@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build (linux)
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+            go build -trimpath -ldflags "-s -w -X main.Version=${VERSION}" \
+            -o dist/mightymonitor-agent-linux-amd64 ./cmd/mightymonitor-agent
+
+          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 \
+            go build -trimpath -ldflags "-s -w -X main.Version=${VERSION}" \
+            -o dist/mightymonitor-agent-linux-arm64 ./cmd/mightymonitor-agent
+
+      - name: Checksums
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum mightymonitor-agent-linux-amd64 > mightymonitor-agent-linux-amd64.sha256
+          sha256sum mightymonitor-agent-linux-arm64 > mightymonitor-agent-linux-arm64.sha256
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/mightymonitor-agent-linux-amd64
+            dist/mightymonitor-agent-linux-amd64.sha256
+            dist/mightymonitor-agent-linux-arm64
+            dist/mightymonitor-agent-linux-arm64.sha256
+

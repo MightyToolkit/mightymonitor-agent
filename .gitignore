@@ -1,0 +1,18 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Local build output
+dist/
+bin/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+
