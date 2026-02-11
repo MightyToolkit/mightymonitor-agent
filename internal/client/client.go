@@ -35,18 +35,6 @@ func (e *HTTPError) Error() string {
 	return fmt.Sprintf("http %d: %s", e.StatusCode, e.Body)
 }
 
-func IsTransientSendError(err error) bool {
-	var httpErr *HTTPError
-	if errors.As(err, &httpErr) {
-		return isRetryableStatus(httpErr.StatusCode)
-	}
-	return isRetryableError(err)
-}
-
-func NewClient(cfg *config.Config) *Client {
-	return NewClientWithOptions(cfg, false)
-}
-
 func NewClientWithOptions(cfg *config.Config, allowInsecureLocalhost bool) *Client {
 	return &Client{
 		httpClient:             &http.Client{Timeout: 30 * time.Second},

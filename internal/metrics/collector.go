@@ -44,6 +44,16 @@ func Collect() (*Payload, error) {
 		}
 	}
 
+	network, err := CollectNetwork("/var/lib/mightymonitor")
+	if err != nil {
+		log.Printf("WARN metrics network collection failed: %v", err)
+	} else if network != nil {
+		payload.Network = &NetworkPayload{
+			RxBytesPerSec: network.RxBytesPerSec,
+			TxBytesPerSec: network.TxBytesPerSec,
+		}
+	}
+
 	uptime, err := GetUptime()
 	if err != nil {
 		log.Printf("WARN metrics uptime collection failed: %v", err)

@@ -70,10 +70,6 @@ func (b *Buffer) Count() (int, error) {
 	return len(items), nil
 }
 
-func AppendPayload(path string, payload *metrics.Payload) error {
-	return NewBuffer(path, defaultMaxSize).Push(payload)
-}
-
 func (b *Buffer) writeAll(items []*metrics.Payload) error {
 	if err := os.MkdirAll(filepath.Dir(b.path), 0o700); err != nil {
 		return err

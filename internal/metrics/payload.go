@@ -1,14 +1,15 @@
 package metrics
 
 type Payload struct {
-	HostID        string        `json:"hostId"`
-	Hostname      string        `json:"hostname"`
-	AgentVersion  string        `json:"agentVersion"`
-	TS            int64         `json:"ts"`
-	CPU           CPUPayload    `json:"cpu"`
-	Memory        MemoryPayload `json:"memory"`
-	Disk          DiskPayload   `json:"disk"`
-	UptimeSeconds *int64        `json:"uptimeSeconds,omitempty"`
+	HostID        string          `json:"hostId"`
+	Hostname      string          `json:"hostname"`
+	AgentVersion  string          `json:"agentVersion"`
+	TS            int64           `json:"ts"`
+	CPU           CPUPayload      `json:"cpu"`
+	Memory        MemoryPayload   `json:"memory"`
+	Disk          DiskPayload     `json:"disk"`
+	Network       *NetworkPayload `json:"network,omitempty"`
+	UptimeSeconds *int64          `json:"uptimeSeconds,omitempty"`
 }
 
 type CPUPayload struct {
@@ -47,4 +48,9 @@ type MemoryMetrics struct {
 type DiskMetrics struct {
 	TotalBytes int64
 	FreeBytes  int64
+}
+
+type NetworkPayload struct {
+	RxBytesPerSec float64 `json:"rxBytesPerSec"`
+	TxBytesPerSec float64 `json:"txBytesPerSec"`
 }
